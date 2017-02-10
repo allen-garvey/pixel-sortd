@@ -4,7 +4,7 @@ import std.algorithm.sorting;
 import arsd.color;
 
 
-enum SortType{
+enum RgbSortType{
 	red,
 	green,
 	blue
@@ -13,15 +13,15 @@ enum SortType{
 //sorts horizontal or vertical line of colors
 //for some reason it is almost twice as fast to sort
 //by passing in string than using function
-void sortLine(Color[] line, SortType sortType){
+void sortLine(Color[] line, RgbSortType sortType){
 	switch(sortType){
-		case SortType.red:
+		case RgbSortType.red:
 			line.sort!("a.r < b.r");
 			break;
-		case SortType.green:
+		case RgbSortType.green:
 			line.sort!("a.g < b.g");
 			break;
-		case SortType.blue:
+		case RgbSortType.blue:
 			line.sort!("a.b < b.b");
 			break;
 		default:
@@ -31,7 +31,8 @@ void sortLine(Color[] line, SortType sortType){
 }
 
 
-void sortByColumn(MemoryImage memoryImage, SortType sortType){
+
+void sortByColumn(MemoryImage memoryImage, RgbSortType sortType){
 	int height = memoryImage.height();
 	int width = memoryImage.width();
 	Color[] column = new Color[height];
@@ -50,7 +51,7 @@ void sortByColumn(MemoryImage memoryImage, SortType sortType){
 	}
 }
 
-void sortByRow(MemoryImage memoryImage, SortType sortType){
+void sortByRow(MemoryImage memoryImage, RgbSortType sortType){
 	int height = memoryImage.height();
 	int width = memoryImage.width();
 	Color[] row = new Color[width];

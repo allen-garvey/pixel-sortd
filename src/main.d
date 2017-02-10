@@ -35,7 +35,7 @@ int main(string[] args){
 
 	image.memoryImage = loadMemoryImage(image);
 
-	sortByRow(image.memoryImage, SortType.red);
+	sortByRow(image.memoryImage, RgbSortType.red);
 
 	//has to save to png for now
 	saveToFile(image, defaultModifiedFilePath(image.path));
