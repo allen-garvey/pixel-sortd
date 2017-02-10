@@ -2,7 +2,6 @@ module pixel_sortd.main;
 
 import std.stdio;
 import arsd.color;
-import arsd.png;
 import pixel_sortd.file;
 import pixel_sortd.image;
 
