@@ -49,3 +49,22 @@ void sortByColumn(MemoryImage memoryImage, SortType sortType){
 
 	}
 }
+
+void sortByRow(MemoryImage memoryImage, SortType sortType){
+	int height = memoryImage.height();
+	int width = memoryImage.width();
+	Color[] row = new Color[width];
+
+	for(int y=0; y < height; y++){
+		for(int x=0; x < width; x++){
+			row[x] = memoryImage.getPixel(x, y);
+		}
+		
+		sortLine(row, sortType);
+		
+		for(int x=0; x < width; x++){
+			memoryImage.setPixel(x, y, row[x]);
+		}
+
+	}
+}
