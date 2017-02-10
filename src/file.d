@@ -4,12 +4,7 @@ import std.path;
 import std.string;
 import std.file;
 import std.conv;
-
-enum ImageFileType{
-	Unsupported = 0,
-	Jpeg,
-	Png
-}
+import pixel_sortd.image;
 
 ImageFileType imageFileTypeFor(string path){
 	auto pathExtension = extension(path);

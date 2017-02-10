@@ -20,25 +20,21 @@ int main(string[] args){
 
 	PixelImage image;
 	image.path = args[1];
-	image.fileType = imageFileTypeFor(image.path);
 
 	if(!isValidFilename(image.path)){
 		stderr.writef("%s doesn't exist or is a directory\n", image.path);
 		return 1;
 	}
 
-	switch(image.fileType){
-		case ImageFileType.Png:
-			image.memoryImage = readPng(image.path);
-			break;
-		case ImageFileType.Jpeg:
-			import arsd.jpeg;
-			image.memoryImage = readJpeg(image.path);
-			break;
-		default:
-			stderr.writef("%s is not a jpeg or png file\n", image.path);
-			return 1;
+	image.fileType = imageFileTypeFor(image.path);
+
+	if(image.fileType == ImageFileType.Unsupported){
+		stderr.writef("%s is not a jpeg or png file\n", image.path);
+		return 1;
 	}
+
+	image.memoryImage = loadMemoryImage(image);
+
 
 	for(int x=0;x<image.memoryImage.width() / 2;x++){
 		for(int y=0;y<image.memoryImage.height();y++){
@@ -47,9 +43,8 @@ int main(string[] args){
 		}
 	}
 
-	//no functions to write jpegs
-	writePng(defaultModifiedFilePath(image.path), image.memoryImage);
-	
+	//has to save to png for now
+	saveToFile(image, defaultModifiedFilePath(image.path));
 
 
 	return 0;
