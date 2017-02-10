@@ -34,7 +34,7 @@ string defaultModifiedFilePath(string path){
 	string modifiedPathName = stripExtension(path) ~ "_modified" ~ ".png";
 	int i = 1;
 	while(exists(modifiedPathName)){
-		modifiedPathName = stripExtension(modifiedPathName) ~ to!string(i) ~ ".png";
+		modifiedPathName = stripExtension(path) ~ "_modified" ~ to!string(i) ~ ".png";
 		i++;
 	}
 
