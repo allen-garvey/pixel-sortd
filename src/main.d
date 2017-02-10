@@ -35,18 +35,7 @@ int main(string[] args){
 
 	image.memoryImage = loadMemoryImage(image);
 
-	Color[] column = new Color[image.memoryImage.height()];
-
-	for(int x=0;x<image.memoryImage.width();x++){
-		for(int y=0;y<image.memoryImage.height();y++){
-			column[y] = image.memoryImage.getPixel(x, y);
-		}
-		sortLine(column, SortType.blue);
-		for(int y=0;y<image.memoryImage.height();y++){
-			image.memoryImage.setPixel(x, y, column[y]);
-		}
-
-	}
+	sortByColumn(image.memoryImage, SortType.red);
 
 	//has to save to png for now
 	saveToFile(image, defaultModifiedFilePath(image.path));

@@ -10,12 +10,9 @@ enum SortType{
 	blue
 }
 
-
-int compareByRed(Color color1, Color color2){
-	return color1.r < color2.r;
-}
-
 //sorts horizontal or vertical line of colors
+//for some reason it is almost twice as fast to sort
+//by passing in string than using function
 void sortLine(Color[] line, SortType sortType){
 	switch(sortType){
 		case SortType.red:
@@ -31,4 +28,24 @@ void sortLine(Color[] line, SortType sortType){
 			break;
 	}
 
+}
+
+
+void sortByColumn(MemoryImage memoryImage, SortType sortType){
+	int height = memoryImage.height();
+	int width = memoryImage.width();
+	Color[] column = new Color[height];
+
+	for(int x=0; x < width; x++){
+		for(int y=0; y < height; y++){
+			column[y] = memoryImage.getPixel(x, y);
+		}
+		
+		sortLine(column, sortType);
+		
+		for(int y=0; y < height; y++){
+			memoryImage.setPixel(x, y, column[y]);
+		}
+
+	}
 }
