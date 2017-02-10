@@ -1,5 +1,6 @@
 module pixel_sortd.image;
 
+import std.string;
 import arsd.color;
 import arsd.png;
 import arsd.jpeg;
@@ -20,7 +21,7 @@ enum ImageFileType{
 MemoryImage loadMemoryImage(PixelImage pixelImage)
 in{
 	assert(pixelImage.fileType == ImageFileType.Jpeg || pixelImage.fileType == ImageFileType.Png);
-	assert(pixelImage.path !is null && pixelImage.path != "");
+	assert(!pixelImage.path.empty);
 }
 body{
 	if(pixelImage.fileType == ImageFileType.Png){
@@ -33,7 +34,7 @@ body{
 void saveToFile(PixelImage pixelImage, string path)
 in{
 	assert(pixelImage.memoryImage !is null);
-	assert(path !is null && path != "");
+	assert(!path.empty);
 }
 body{
 	writePng(path, pixelImage.memoryImage);
