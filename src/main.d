@@ -4,6 +4,7 @@ import std.stdio;
 import arsd.color;
 import pixel_sortd.file;
 import pixel_sortd.image;
+import pixel_sortd.sort;
 
 
 int printUsage(string programName){
@@ -34,12 +35,17 @@ int main(string[] args){
 
 	image.memoryImage = loadMemoryImage(image);
 
+	Color[] column = new Color[image.memoryImage.height()];
 
-	for(int x=0;x<image.memoryImage.width() / 2;x++){
+	for(int x=0;x<image.memoryImage.width();x++){
 		for(int y=0;y<image.memoryImage.height();y++){
-			Color black = Color(0,0,0,255);
-			image.memoryImage.setPixel(x, y, black);
+			column[y] = image.memoryImage.getPixel(x, y);
 		}
+		sortLine(column, SortType.blue);
+		for(int y=0;y<image.memoryImage.height();y++){
+			image.memoryImage.setPixel(x, y, column[y]);
+		}
+
 	}
 
 	//has to save to png for now
