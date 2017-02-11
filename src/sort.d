@@ -154,3 +154,35 @@ if (is(T : HslSortType) || is(T : RgbSortType)){
 		}
 	}
 }
+
+//sorts image
+//alternates between sorting lines and skipping them
+//laneSize dictates how large the lanes of sorted and skipped lines are
+//laneSize of 1 will sort whole image, laneSize of 2 sorts every other line, and so on
+void sortImageLanes(T)(MemoryImage memoryImage, T sortType, ImageSortDirection sortDirection, int laneSize=1) 
+if (is(T : HslSortType) || is(T : RgbSortType))
+in{
+	assert(laneSize > 0);
+}
+body{
+	mixin sortImageInit!(T);
+	sortImageinitFunc();
+
+	int linesSortedInLane = 0;
+	for(i=0; i < outerLoopMax; i++){
+		for(j=0; j < innerLoopMax; j++){
+			savePixel(j);
+		}
+		
+		sortLine(line, sortType);
+		
+		for(j=0; j < innerLoopMax; j++){
+			writePixel(j);
+		}
+		linesSortedInLane++;
+		if(linesSortedInLane == laneSize - 1){
+			i += laneSize;
+			linesSortedInLane = 0;
+		}
+	}
+}
