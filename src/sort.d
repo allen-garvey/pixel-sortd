@@ -61,7 +61,9 @@ void sortLine(real[][] line, HslSortType sortType){
 }
 
 
-void sortImage(T)(MemoryImage memoryImage, T sortType, ImageSortDirection sortDirection) 
+///Used to initialize variables in sort image functions
+// call sortImageinitFunc(); after instantiating the mixin
+mixin template sortImageInit(T)
 if (is(T : HslSortType) || is(T : RgbSortType)){
 	int height = memoryImage.height();
 	int width = memoryImage.width();
@@ -78,33 +80,45 @@ if (is(T : HslSortType) || is(T : RgbSortType)){
 	else{
 		Color[] line;
 	}
-	if(sortDirection == ImageSortDirection.row){
-		static if(is(T : HslSortType)){
-			line = new real[][](width, 3);
+
+	void sortImageinitFunc(){
+		if(sortDirection == ImageSortDirection.row){
+			static if(is(T : HslSortType)){
+				line = new real[][](width, 3);
+			}
+			//RgbSortType
+			else{
+				line = new Color[width];
+			}
+			outerLoopMax = height;
+			innerLoopMax = width;
+			x = &j;
+			y = &i;
 		}
-		//RgbSortType
+		//column
 		else{
-			line = new Color[width];
+			static if(is(T : HslSortType)){
+				line = new real[][](height, 3);
+			}
+			//RgbSortType
+			else{
+				line = new Color[height];
+			}
+			outerLoopMax = width;
+			innerLoopMax = height;
+			x = &i;
+			y = &j;
 		}
-		outerLoopMax = height;
-		innerLoopMax = width;
-		x = &j;
-		y = &i;
 	}
-	//column
-	else{
-		static if(is(T : HslSortType)){
-			line = new real[][](height, 3);
-		}
-		//RgbSortType
-		else{
-			line = new Color[height];
-		}
-		outerLoopMax = width;
-		innerLoopMax = height;
-		x = &i;
-		y = &j;
-	}
+	
+}
+
+
+
+void sortImage(T)(MemoryImage memoryImage, T sortType, ImageSortDirection sortDirection) 
+if (is(T : HslSortType) || is(T : RgbSortType)){
+	mixin sortImageInit!(T);
+	sortImageinitFunc();
 
 	for(i=0; i < outerLoopMax; i++){
 		for(j=0; j < innerLoopMax; j++){
