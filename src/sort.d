@@ -16,6 +16,11 @@ enum HslSortType{
 	lightness
 }
 
+enum ImageSortDirection{
+	row,
+	column
+}
+
 //sorts horizontal or vertical line of colors
 //for some reason it is almost twice as fast to sort
 //by passing in string than using function
@@ -74,43 +79,42 @@ void sortByColumn(MemoryImage memoryImage, HslSortType sortType){
 	}
 }
 
-
-
-void sortByColumn(MemoryImage memoryImage, RgbSortType sortType){
+void sortImage(MemoryImage memoryImage, RgbSortType sortType, ImageSortDirection sortDirection){
 	int height = memoryImage.height();
 	int width = memoryImage.width();
-	Color[] column = new Color[height];
-
-	for(int x=0; x < width; x++){
-		for(int y=0; y < height; y++){
-			column[y] = memoryImage.getPixel(x, y);
-		}
-		
-		sortLine(column, sortType);
-		
-		for(int y=0; y < height; y++){
-			memoryImage.setPixel(x, y, column[y]);
-		}
-
+	Color[] line;
+	int i;
+	int j;
+	int *x = null;
+	int *y = null;
+	int outerLoopMax;
+	int innerLoopMax;
+	if(sortDirection == ImageSortDirection.row){
+		line = new Color[width];
+		outerLoopMax = height;
+		innerLoopMax = width;
+		x = &j;
+		y = &i;
 	}
-}
+	//column
+	else{
+		line = new Color[height];
+		outerLoopMax = width;
+		innerLoopMax = height;
+		x = &i;
+		y = &j;
+	}
 
-void sortByRow(MemoryImage memoryImage, RgbSortType sortType){
-	int height = memoryImage.height();
-	int width = memoryImage.width();
-	Color[] row = new Color[width];
-
-	for(int y=0; y < height; y++){
-		for(int x=0; x < width; x++){
-			row[x] = memoryImage.getPixel(x, y);
+	for(i=0; i < outerLoopMax; i++){
+		for(j=0; j < innerLoopMax; j++){
+			line[j] = memoryImage.getPixel(*x, *y);
 		}
 		
-		sortLine(row, sortType);
+		sortLine(line, sortType);
 		
-		for(int x=0; x < width; x++){
-			memoryImage.setPixel(x, y, row[x]);
+		for(j=0; j < innerLoopMax; j++){
+			memoryImage.setPixel(*x, *y, line[j]);
 		}
-
 	}
 }
 
