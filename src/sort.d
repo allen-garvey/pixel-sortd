@@ -110,6 +110,28 @@ if (is(T : HslSortType) || is(T : RgbSortType)){
 			y = &j;
 		}
 	}
+
+	//saves pixel from memory image to line array at index 
+	void savePixel(int index){
+		static if(is(T : HslSortType)){
+			line[index] = toHsl(memoryImage.getPixel(*x, *y));
+		}
+		//RgbSortType
+		else{
+			line[index] = memoryImage.getPixel(*x, *y);
+		}
+	}
+
+	//writes pixel from line array at index to memory image
+	void writePixel(int index){
+		static if(is(T : HslSortType)){
+			memoryImage.setPixel(*x, *y, fromHsl(line[index][0], line[index][1], line[index][2]));
+		}
+		//RgbSortType
+		else{
+			memoryImage.setPixel(*x, *y, line[index]);
+		}
+	}
 	
 }
 
@@ -122,25 +144,13 @@ if (is(T : HslSortType) || is(T : RgbSortType)){
 
 	for(i=0; i < outerLoopMax; i++){
 		for(j=0; j < innerLoopMax; j++){
-			static if(is(T : HslSortType)){
-				line[j] = toHsl(memoryImage.getPixel(*x, *y));
-			}
-			//RgbSortType
-			else{
-				line[j] = memoryImage.getPixel(*x, *y);
-			}
+			savePixel(j);
 		}
 		
 		sortLine(line, sortType);
 		
 		for(j=0; j < innerLoopMax; j++){
-			static if(is(T : HslSortType)){
-				memoryImage.setPixel(*x, *y, fromHsl(line[j][0], line[j][1], line[j][2]));
-			}
-			//RgbSortType
-			else{
-				memoryImage.setPixel(*x, *y, line[j]);
-			}
+			writePixel(j);
 		}
 	}
 }
