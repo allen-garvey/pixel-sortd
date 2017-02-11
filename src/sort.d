@@ -60,25 +60,6 @@ void sortLine(real[][] line, HslSortType sortType){
 	}
 }
 
-void sortByColumn(MemoryImage memoryImage, HslSortType sortType){
-	int height = memoryImage.height();
-	int width = memoryImage.width();
-	real[][] column = new real[][](height, 3);
-
-	for(int x=0; x < width; x++){
-		for(int y=0; y < height; y++){
-			column[y] = toHsl(memoryImage.getPixel(x, y));
-		}
-		
-		sortLine(column, sortType);
-		
-		for(int y=0; y < height; y++){
-			memoryImage.setPixel(x, y, fromHsl(column[y][0], column[y][1], column[y][2]));
-		}
-
-	}
-}
-
 void sortImage(MemoryImage memoryImage, RgbSortType sortType, ImageSortDirection sortDirection){
 	int height = memoryImage.height();
 	int width = memoryImage.width();
@@ -118,21 +99,42 @@ void sortImage(MemoryImage memoryImage, RgbSortType sortType, ImageSortDirection
 	}
 }
 
-void sortByRow(MemoryImage memoryImage, HslSortType sortType){
+void sortImage(MemoryImage memoryImage, HslSortType sortType, ImageSortDirection sortDirection){
 	int height = memoryImage.height();
 	int width = memoryImage.width();
-	real[][] row = new real[][](width, 3);
+	real[][] line;
+	int i;
+	int j;
+	int *x = null;
+	int *y = null;
+	int outerLoopMax;
+	int innerLoopMax;
 
-	for(int y=0; y < height; y++){
-		for(int x=0; x < width; x++){
-			row[x] = toHsl(memoryImage.getPixel(x, y));
+	if(sortDirection == ImageSortDirection.row){
+		line = new real[][](width, 3);
+		outerLoopMax = height;
+		innerLoopMax = width;
+		x = &j;
+		y = &i;
+	}
+	//column
+	else{
+		line = new real[][](height, 3);
+		outerLoopMax = width;
+		innerLoopMax = height;
+		x = &i;
+		y = &j;
+	}
+
+	for(i=0; i < outerLoopMax; i++){
+		for(j=0; j < innerLoopMax; j++){
+			line[j] = toHsl(memoryImage.getPixel(*x, *y));
 		}
 		
-		sortLine(row, sortType);
+		sortLine(line, sortType);
 		
-		for(int x=0; x < width; x++){
-			memoryImage.setPixel(x, y, fromHsl(row[x][0], row[x][1], row[x][2]));
+		for(j=0; j < innerLoopMax; j++){
+			memoryImage.setPixel(*x, *y, fromHsl(line[j][0], line[j][1], line[j][2]));
 		}
-
 	}
 }
