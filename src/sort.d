@@ -60,18 +60,32 @@ void sortLine(real[][] line, HslSortType sortType){
 	}
 }
 
-void sortImage(MemoryImage memoryImage, RgbSortType sortType, ImageSortDirection sortDirection){
+
+void sortImage(T)(MemoryImage memoryImage, T sortType, ImageSortDirection sortDirection) 
+if (is(T : HslSortType) || is(T : RgbSortType)){
 	int height = memoryImage.height();
 	int width = memoryImage.width();
-	Color[] line;
 	int i;
 	int j;
 	int *x = null;
 	int *y = null;
 	int outerLoopMax;
 	int innerLoopMax;
+	static if(is(T : HslSortType)){
+		real[][] line;
+	}
+	//RgbSortType
+	else{
+		Color[] line;
+	}
 	if(sortDirection == ImageSortDirection.row){
-		line = new Color[width];
+		static if(is(T : HslSortType)){
+			line = new real[][](width, 3);
+		}
+		//RgbSortType
+		else{
+			line = new Color[width];
+		}
 		outerLoopMax = height;
 		innerLoopMax = width;
 		x = &j;
@@ -79,7 +93,13 @@ void sortImage(MemoryImage memoryImage, RgbSortType sortType, ImageSortDirection
 	}
 	//column
 	else{
-		line = new Color[height];
+		static if(is(T : HslSortType)){
+			line = new real[][](height, 3);
+		}
+		//RgbSortType
+		else{
+			line = new Color[height];
+		}
 		outerLoopMax = width;
 		innerLoopMax = height;
 		x = &i;
@@ -88,53 +108,25 @@ void sortImage(MemoryImage memoryImage, RgbSortType sortType, ImageSortDirection
 
 	for(i=0; i < outerLoopMax; i++){
 		for(j=0; j < innerLoopMax; j++){
-			line[j] = memoryImage.getPixel(*x, *y);
+			static if(is(T : HslSortType)){
+				line[j] = toHsl(memoryImage.getPixel(*x, *y));
+			}
+			//RgbSortType
+			else{
+				line[j] = memoryImage.getPixel(*x, *y);
+			}
 		}
 		
 		sortLine(line, sortType);
 		
 		for(j=0; j < innerLoopMax; j++){
-			memoryImage.setPixel(*x, *y, line[j]);
-		}
-	}
-}
-
-void sortImage(MemoryImage memoryImage, HslSortType sortType, ImageSortDirection sortDirection){
-	int height = memoryImage.height();
-	int width = memoryImage.width();
-	real[][] line;
-	int i;
-	int j;
-	int *x = null;
-	int *y = null;
-	int outerLoopMax;
-	int innerLoopMax;
-
-	if(sortDirection == ImageSortDirection.row){
-		line = new real[][](width, 3);
-		outerLoopMax = height;
-		innerLoopMax = width;
-		x = &j;
-		y = &i;
-	}
-	//column
-	else{
-		line = new real[][](height, 3);
-		outerLoopMax = width;
-		innerLoopMax = height;
-		x = &i;
-		y = &j;
-	}
-
-	for(i=0; i < outerLoopMax; i++){
-		for(j=0; j < innerLoopMax; j++){
-			line[j] = toHsl(memoryImage.getPixel(*x, *y));
-		}
-		
-		sortLine(line, sortType);
-		
-		for(j=0; j < innerLoopMax; j++){
-			memoryImage.setPixel(*x, *y, fromHsl(line[j][0], line[j][1], line[j][2]));
+			static if(is(T : HslSortType)){
+				memoryImage.setPixel(*x, *y, fromHsl(line[j][0], line[j][1], line[j][2]));
+			}
+			//RgbSortType
+			else{
+				memoryImage.setPixel(*x, *y, line[j]);
+			}
 		}
 	}
 }
