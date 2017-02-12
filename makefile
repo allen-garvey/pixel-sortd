@@ -1,9 +1,10 @@
 SRC = $(shell find ./src -type f -name '*.d')
+ARSD = lib/arsd/color.d lib/arsd/png.d lib/arsd/jpeg.d
 
 all: dev
 
 dev:
-	dmd $(SRC) lib/arsd/color.d lib/arsd/png.d lib/arsd/jpeg.d -of./bin/pixel-sortd -od./bin -unittest
+	dmd $(SRC) $(ARSD) -of./bin/pixel-sortd -od./bin -unittest
 
 release:
-	dmd $(SRC) lib/arsd/color.d lib/arsd/png.d lib/arsd/jpeg.d -of./bin/pixel-sortd -od./bin -O -inline
+	dmd $(SRC) $(ARSD) -of./bin/pixel-sortd -od./bin -O -inline
