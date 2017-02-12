@@ -186,3 +186,47 @@ body{
 		}
 	}
 }
+
+
+//sorts image
+//alternates sorting lines by different values in sortType enum
+//laneSize dictates how large the alternating colored lanes are
+//laneSize of 1 will sort whole image with same sortType
+void sortImageColorLanes(T)(MemoryImage memoryImage, ImageSortDirection sortDirection, int laneSize=1) 
+if (is(T : HslSortType) || is(T : RgbSortType))
+in{
+	assert(laneSize > 0);
+}
+body{
+	mixin sortImageInit!(T);
+	sortImageinitFunc();
+
+	static if(is(T : HslSortType)){
+		HslSortType[3] sortTypes = [HslSortType.hue, HslSortType.saturation, HslSortType.lightness];
+	}
+	//RgbSortType
+	else{
+		RgbSortType[3] sortTypes = [RgbSortType.red, RgbSortType.green, RgbSortType.blue];
+	}
+	int currentSortTypeIndex = 0;
+	int linesSortedInLane = 0;
+	for(i=0; i < outerLoopMax; i++){
+		for(j=0; j < innerLoopMax; j++){
+			savePixel(j);
+		}
+		
+		sortLine(line, sortTypes[currentSortTypeIndex]);
+		
+		for(j=0; j < innerLoopMax; j++){
+			writePixel(j);
+		}
+		linesSortedInLane++;
+		if(linesSortedInLane == laneSize - 1){
+			linesSortedInLane = 0;
+			currentSortTypeIndex++;
+			if(currentSortTypeIndex == sortTypes.length){
+				currentSortTypeIndex = 0;
+			}
+		}
+	}
+}

@@ -35,7 +35,8 @@ int main(string[] args){
 
 	image.memoryImage = loadMemoryImage(image);
 
-	sortImage!(HslSortType)(image.memoryImage, HslSortType.lightness, ImageSortDirection.column);
+	//sortImage!(RgbSortType)(image.memoryImage, RgbSortType.red, ImageSortDirection.column);
+	sortImageColorLanes!(RgbSortType)(image.memoryImage, ImageSortDirection.row, 50);
 
 	//has to save to png for now
 	saveToFile(image, defaultModifiedFilePath(image.path));
